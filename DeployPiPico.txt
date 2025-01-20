@@ -1,0 +1,4 @@
+dotnet publish --runtime linux-arm64 --self-contained
+
+/ Once in the Release folder (e/dev/AzureIoTServer/AzureIoTServer/bin/Release/net8.0/linux-arm64)
+scp -r * rcaron@PiNode1:/home/rcaron/AzureIoT
