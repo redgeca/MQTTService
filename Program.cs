@@ -1,5 +1,6 @@
 using AzureIoTServer.Models;
 using AzureIoTServer.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication().AddBearerToken();
+builder.Services.AddIdentityCore<User>()
+    .AddEntityFrameworkStores<IoTDBContext>()
+    .AddApiEndpoints();
+
 builder.Services.AddDbContext<IoTDBContext>();
+    
 
 builder.Services.AddWindowsService(options =>
 {
@@ -27,8 +35,6 @@ builder.Services.ConfigureSwaggerGen(setup =>
         Version = "v1"
     });
 });
-
-//builder.Services.AddHostedService<MQTTBroker>();
 
 var app = builder.Build();
 
@@ -49,6 +55,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapIdentityApi<User>();
 
 app.UseAuthorization();
 

@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace AzureIoTServer.Models
 {
-    public class TempHumidity
+    public class Temperature
     {
         [Key]
         public DateTime dateTime { get; set; }
 
+        [JsonInclude]
+        [JsonPropertyName("temp")]
         public float temperature{ get; set; }
-
-        public float humidity { get; set; }
     }
 }

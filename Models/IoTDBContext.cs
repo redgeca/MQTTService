@@ -1,20 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace AzureIoTServer.Models
 {
-    public class IoTDBContext : DbContext
+    public class IoTDBContext : IdentityDbContext<User>
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment environment;
 
         DbSet<ESP32CamLogs> esp32Logs { get; set; }
 
-        DbSet<TempHumidity> tempHumidities { get; set; }
+        DbSet<Temperature> temperatures { get; set; }
 
         public IoTDBContext(DbContextOptions<IoTDBContext> dbContextOptions, IConfiguration configuration, IWebHostEnvironment environment) : base(dbContextOptions)
         {
             _configuration = configuration;
             this.environment = environment;
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

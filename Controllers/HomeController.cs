@@ -8,7 +8,8 @@ namespace AzureIoTServer.Controllers
     public class HomeController : Controller
     {
         // GET: HomeController
-        public ActionResult Index()
+        [HttpGet(Name = "get")]
+        public ActionResult Get()
         {
             return Ok("This is a string response.");
         }

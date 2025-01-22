@@ -7,6 +7,8 @@ using HiveMQtt.MQTT5.ReasonCodes;
 using HiveMQtt.MQTT5.Types;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Sockets;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace AzureIoTServer.Services
 {
@@ -20,7 +22,9 @@ namespace AzureIoTServer.Services
                 Port = 8883,
                 UseTLS = true,
                 UserName = "rcaron",
-                Password = "Apsodi81!"
+                Password = "Apsodi81!", 
+                AutomaticReconnect = true,
+                KeepAlive = 10
             };
 
             HiveMQClient mqttClient = new HiveMQClient(mqttOptions);
@@ -61,16 +65,49 @@ namespace AzureIoTServer.Services
                 string receivedMessage = args.PublishMessage.PayloadAsString;
                 using IServiceScope scope = serviceScopeFactory.CreateScope();
                 var dbContext = scope.ServiceProvider.GetRequiredService<IoTDBContext>();
-                dbContext.Add(new ESP32CamLogs(receivedMessage));
+                JsonObject? jsonObject = JsonNode.Parse(receivedMessage)!.AsObject();
+                dbContext.Add(new Temperature
+                {
+                    dateTime = DateTime.Now,
+                    temperature = jsonObject["temp"]!.GetValue<float>()
+                });
+
+
                 dbContext.SaveChanges();
                 logger.LogInformation(receivedMessage);
             };
 
             // Subscribe
-            await mqttClient.SubscribeAsync("iotserver/commands").ConfigureAwait(false);
+            await mqttClient.SubscribeAsync("iotserver/commands", QualityOfService.ExactlyOnceDelivery).ConfigureAwait(false);
 
             // Wait till application stops
-            while (!stoppingToken.IsCancellationRequested);
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                //if (!mqttClient.Reconne.IsConnected())
+                //{
+                //    connectionResult = await mqttClient.ConnectAsync().ConfigureAwait(false);
+                //    Console.WriteLine($"Reconnection result : {connectionResult} ");
+
+                //    mqttClient.OnMessageReceived += (sender, args) =>
+                //    {
+                //        string receivedMessage = args.PublishMessage.PayloadAsString;
+                //        using IServiceScope scope = serviceScopeFactory.CreateScope();
+                //        var dbContext = scope.ServiceProvider.GetRequiredService<IoTDBContext>();
+                //        JsonObject? jsonObject = JsonNode.Parse(receivedMessage)!.AsObject();
+                //        dbContext.Add(new Temperature
+                //        {
+                //            dateTime = DateTime.Now,
+                //            temperature = jsonObject["temp"]!.GetValue<float>()
+                //        });
+
+
+                //        dbContext.SaveChanges();
+                //        logger.LogInformation(receivedMessage);
+                //    };
+
+
+                //}
+            };
 
             //// Start Publishing...
             //try
