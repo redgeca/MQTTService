@@ -12,14 +12,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication().AddBearerToken();
-builder.Services.AddIdentityCore<User>()
-    .AddEntityFrameworkStores<IoTDBContext>()
-    .AddApiEndpoints();
-
 builder.Services.AddDbContext<IoTDBContext>();
-    
+
+builder.Services.AddAuthorization();
+builder.Services.AddIdentityApiEndpoints<User>()
+    .AddEntityFrameworkStores<IoTDBContext>();
+
+builder.Services.AddScoped<IHMMDService, HMMDService>();
 
 builder.Services.AddWindowsService(options =>
 {
@@ -45,21 +44,16 @@ using(var serviceScope = app.Services.CreateScope())
 
 }
 
-// With Azure, Swagger always need to be generated
-app.UseSwagger();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 app.MapIdentityApi<User>();
-
+app.UseHttpsRedirection();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

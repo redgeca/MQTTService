@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AzureIoTServer.Migrations
+namespace IoTFallServer.Migrations
 {
     [DbContext(typeof(IoTDBContext))]
     partial class IoTDBContextModelSnapshot : ModelSnapshot
@@ -21,34 +21,6 @@ namespace AzureIoTServer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("AzureIoTServer.Models.ESP32CamLogs", b =>
-                {
-                    b.Property<DateTime>("dateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("logMessage")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("dateTime");
-
-                    b.ToTable("esp32Logs");
-                });
-
-            modelBuilder.Entity("AzureIoTServer.Models.Temperature", b =>
-                {
-                    b.Property<DateTime>("dateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<float>("temperature")
-                        .HasColumnType("float")
-                        .HasAnnotation("Relational:JsonPropertyName", "temp");
-
-                    b.HasKey("dateTime");
-
-                    b.ToTable("temperatures");
-                });
 
             modelBuilder.Entity("AzureIoTServer.Models.User", b =>
                 {

@@ -24,6 +24,7 @@ namespace AzureIoTServer.Services
                 UserName = "rcaron",
                 Password = "Apsodi81!", 
                 AutomaticReconnect = true,
+                
                 KeepAlive = 10
             };
 
@@ -66,11 +67,11 @@ namespace AzureIoTServer.Services
                 using IServiceScope scope = serviceScopeFactory.CreateScope();
                 var dbContext = scope.ServiceProvider.GetRequiredService<IoTDBContext>();
                 JsonObject? jsonObject = JsonNode.Parse(receivedMessage)!.AsObject();
-                dbContext.Add(new Temperature
-                {
-                    dateTime = DateTime.Now,
-                    temperature = jsonObject["temp"]!.GetValue<float>()
-                });
+                //dbContext.Add(new Temperature
+                //{
+                //    dateTime = DateTime.Now,
+                //    temperature = jsonObject["temp"]!.GetValue<float>()
+                //});
 
 
                 dbContext.SaveChanges();
@@ -83,6 +84,19 @@ namespace AzureIoTServer.Services
             // Wait till application stops
             while (!stoppingToken.IsCancellationRequested)
             {
+                await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
+                Console.WriteLine($"Connected: {mqttClient.IsConnected()}");
+                if (!mqttClient.IsConnected())
+                {
+                    connectionResult = await mqttClient.ConnectAsync().ConfigureAwait(false);
+                    if (connectionResult.ReasonCode == ConnAckReasonCode.Success)
+                    {
+                        logger.LogInformation($"Reconnection Sucessful : {connectionResult}");
+                    } else
+                    {
+                        logger.LogInformation($"Reconnection failed : {connectionResult}");
+                    }
+                }
                 //if (!mqttClient.Reconne.IsConnected())
                 //{
                 //    connectionResult = await mqttClient.ConnectAsync().ConfigureAwait(false);

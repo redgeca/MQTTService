@@ -9,10 +9,6 @@ namespace AzureIoTServer.Models
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment environment;
 
-        DbSet<ESP32CamLogs> esp32Logs { get; set; }
-
-        DbSet<Temperature> temperatures { get; set; }
-
         public IoTDBContext(DbContextOptions<IoTDBContext> dbContextOptions, IConfiguration configuration, IWebHostEnvironment environment) : base(dbContextOptions)
         {
             _configuration = configuration;
