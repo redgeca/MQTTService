@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace AzureIoTServer.Models
+namespace IoTFallServer.Models
 {
     public class User : IdentityUser
     {

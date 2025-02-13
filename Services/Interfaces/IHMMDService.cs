@@ -1,6 +1,6 @@
-﻿using AzureIoTServer.Models;
+﻿using IoTFallServer.Models;
 
-namespace AzureIoTServer.Services
+namespace IoTFallServer.Services.Interfaces
 {
     public interface IHMMDService
     {

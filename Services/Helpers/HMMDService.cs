@@ -1,7 +1,8 @@
-﻿using AzureIoTServer.Models;
+﻿using IoTFallServer.Models;
+using IoTFallServer.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace AzureIoTServer.Services
+namespace IoTFallServer.Services.Helpers
 {
     public class HMMDService : IHMMDService
     {
@@ -10,7 +11,7 @@ namespace AzureIoTServer.Services
 
         public HMMDService(IoTDBContext context, ILogger<HMMDService> logger)
         {
-            this.dbContext = context;
+            dbContext = context;
             this.logger = logger;
         }
 

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 
-namespace AzureIoTServer.Models
+namespace IoTFallServer.Models
 {
     public class IoTDBContext : IdentityDbContext<User>
     {
@@ -24,9 +24,6 @@ namespace AzureIoTServer.Models
         {
             String? connectionString = _configuration.GetConnectionString("IoTDB");
             base.OnConfiguring(optionsBuilder);
-
-            //optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), options =>
-            //        options.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null));
 
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), options =>
                 options.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null));

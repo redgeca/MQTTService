@@ -10,18 +10,18 @@ EXPOSE 8081
 # Cette étape permet de publier le projet de service à copier dans la phase finale
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["AzureIoTServer/AzureIoTServer.csproj", "AzureIoTServer/"]
-RUN dotnet restore "./AzureIoTServer/AzureIoTServer.csproj"
+COPY ["IoTFallServer/IoTFallServer.csproj", "IoTFallServer/"]
+RUN dotnet restore "./IoTFallServer/IoTFallServer.csproj"
 COPY . .
-WORKDIR "/src/AzureIoTServer"
-RUN dotnet build "./AzureIoTServer.csproj" -c Release -o /app/build 
+WORKDIR "/src/IoTFallServer"
+RUN dotnet build "./IoTFallServer.csproj" -c Release -o /app/build 
 
 FROM build AS publish
-RUN dotnet publish "AzureIoTServer.csproj" -c Release -o /app/publish /p:UseAppHost=true --runtime linux-arm64 --self-contained
+RUN dotnet publish "IoTFallServer.csproj" -c Release -o /app/publish /p:UseAppHost=true --runtime linux-arm64 --self-contained
 
 # Cette phase est utilisée pour générer le projet de service
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "AzureIoTServer.dll"]
+ENTRYPOINT ["dotnet", "IoTFallServer.dll"]
 

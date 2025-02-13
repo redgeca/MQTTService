@@ -1,8 +1,8 @@
-﻿using AzureIoTServer.Models;
-using AzureIoTServer.Services;
+﻿using IoTFallServer.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AzureIoTServer.Controllers
+namespace IoTFallServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -15,6 +15,7 @@ namespace AzureIoTServer.Controllers
             this.hmmdService = hmmdService;
         }
 
+        [Authorize]
         [HttpGet(Name = "getSensorValues")]
         public IActionResult Index()
         {
